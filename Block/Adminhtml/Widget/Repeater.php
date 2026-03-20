@@ -10,7 +10,7 @@ use Magento\Framework\Data\Form\Element\AbstractElement;
 use Magento\Framework\Data\Form\Element\Factory as ElementFactory;
 use Magento\Framework\ObjectManagerInterface;
 use Magento\Widget\Block\BlockInterface;
-use MatseVH\Repeater\Block\Adminhtml\Widget\Repeater\Field\AbstractField;
+use MatseVH\Repeater\Block\Adminhtml\Widget\Repeater\AbstractField;
 use Psl\Json;
 use Psl\Type;
 
@@ -104,10 +104,22 @@ class Repeater extends Template implements BlockInterface
                 );
             }
 
+            $result = $field->render($this->_element->getId());
+
+            $html = match ($result['type']) {
+                'html' => $result['value'],
+                'template' => $this->getLayout()
+                    ->createBlock(Template::class)
+                    ->setTemplate($result['value'])
+                    ->setField($field)
+                    ->setElementId($this->_element->getId())
+                    ->toHtml(),
+            };
+
             $templates[] = [
-                'data'  => $field->getData(),
-                'label' => $field->renderLabelTemplate($this->_element->getId()),
-                'html'  => $field->renderTemplate($this->_element->getId()),
+                'data' => $field->getData(),
+                'label' => $field->showLabel() ? $field->renderLabelHtml($this->_element->getId()) : '',
+                'html' => $html,
             ];
         }
 

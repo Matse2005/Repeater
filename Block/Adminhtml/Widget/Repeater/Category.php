@@ -6,9 +6,9 @@ namespace MatseVH\Repeater\Block\Adminhtml\Widget\Repeater;
 
 use Magento\Catalog\Model\ResourceModel\Category\CollectionFactory as CategoryCollectionFactory;
 use Magento\Store\Model\Store;
-use MatseVH\Repeater\Block\Adminhtml\Widget\Repeater\Field\Hr;
-use MatseVH\Repeater\Block\Adminhtml\Widget\Repeater\Field\Text;
-use MatseVH\Repeater\Block\Adminhtml\Widget\Repeater\Field\Textarea;
+use MatseVH\Repeater\Block\Adminhtml\Widget\Repeater\Fields\Hr;
+use MatseVH\Repeater\Block\Adminhtml\Widget\Repeater\Fields\Text;
+use MatseVH\Repeater\Block\Adminhtml\Widget\Repeater\Fields\Textarea;
 
 use function Psl\Str\capitalize;
 

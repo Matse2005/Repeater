@@ -1,195 +1,31 @@
 <?php
-
 /** @var MatseVH\Repeater\Block\Adminhtml\Widget\Repeater $block */
 $element     = $block->getElement();
 $elementId   = $element->getId();
 $containerId = $elementId . '_rows';
 $hiddenId    = $elementId . '_json';
 ?>
-
-<div id="<?= $escaper->escapeHtmlAttr($containerId) ?>" style="margin-bottom:8px;"></div>
+<div id="<?= $escaper->escapeHtmlAttr($containerId) ?>" class="repeater-container"></div>
 
 <button type="button"
-    class="action-default scalable"
-    onclick="addRow_<?= $escaper->escapeHtmlAttr($elementId) ?>()"
-    style="margin-bottom:8px;">
+    class="action-default scalable repeater-add"
+    onclick="addRow_<?= $escaper->escapeHtmlAttr($elementId) ?>()">
     &#43; Add <?= $escaper->escapeHtml($block->getLabel()) ?>
 </button>
 
 <input type="hidden"
-    style="display: none;"
     id="<?= $escaper->escapeHtmlAttr($hiddenId) ?>"
     name="<?= $escaper->escapeHtmlAttr($element->getName()) ?>"
     class="widget-option"
     value="<?= $escaper->escapeHtmlAttr($block->getExistingRowsJson()) ?>" />
 
 <script>
-    (function() {
-        var containerId = '<?= $escaper->escapeJs($containerId) ?>';
-        var elementId = '<?= $escaper->escapeJs($elementId) ?>';
-        var hiddenId = '<?= $escaper->escapeJs($hiddenId) ?>';
-        var fields = <?= /* @noEscape */ $block->getFieldTemplatesJson() ?>;
-        var existingRows = <?= /* @noEscape */ $block->getExistingRowsJson() ?>;
-
-        function saveRows() {
-                var valid = true;
-
-    document.querySelectorAll('#' + containerId + ' [data-field][required]').forEach(function(inp) {
-        if (!inp.value.trim()) {
-            inp.classList.add('mage-error');
-            valid = false;
-        } else {
-            inp.classList.remove('mage-error');
-        }
-    });
-
-    if (!valid) {
-        return;
-    }
-
-            var groups = document.querySelectorAll('#' + containerId + ' .repeater-group');
-            var rows = [];
-            groups.forEach(function(groups) {
-                var obj = {};
-                groups.querySelectorAll('input[data-field], textarea[data-field], select[data-field]').forEach(function(inp) {
-                    obj[inp.dataset.field] = inp.value;
-                });
-                rows.push(obj);
-            });
-
-            var json = JSON.stringify(rows);
-
-            var hidden = document.getElementById(hiddenId);
-            if (hidden) {
-                hidden.value = json;
-            }
-
-            var original = document.getElementById(elementId);
-            if (original) {
-                original.value = json;
-            }
-        }
-
-        function escapeHtml(str) {
-            return String(str)
-                .replace(/&/g, '&amp;')
-                .replace(/"/g, '&quot;')
-                .replace(/</g, '&lt;')
-                .replace(/>/g, '&gt;');
-        }
-
-        function appendGroup(val, idx) {
-            val = val || {};
-            var container = document.getElementById(containerId);
-
-            var group = document.createElement('div');
-            group.className = 'repeater-group';
-            group.style.cssText = 'border:1px solid #ccc;padding:8px;margin-bottom:8px;border-radius:4px;width:100%;';
-
-            var header = document.createElement('div');
-            header.style.cssText = 'display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;';
-
-            var title = document.createElement('strong');
-            title.textContent = '<?= $escaper->escapeHtml($block->getLabel()) ?> ' + (idx + 1);
-
-            var removeBtn = document.createElement('button');
-            removeBtn.type = 'button';
-            removeBtn.className = 'action-default';
-            removeBtn.style.cssText = 'color:#e22626;padding:4px 8px;';
-            removeBtn.textContent = '✕ Remove';
-            removeBtn.addEventListener('click', function() {
-                group.remove();
-                document.querySelectorAll('#' + containerId + ' .repeater-group strong').forEach(function(el, i) {
-                    el.textContent = '<?= $escaper->escapeHtml($block->getLabel()) ?> ' + (i + 1);
-                });
-                saveRows();
-            });
-
-            header.appendChild(title);
-            header.appendChild(removeBtn);
-            group.appendChild(header);
-
-            Object.values(fields).forEach(function(field) {
-                var row = document.createElement('div');
-                row.classList.add('admin__field', 'field', 'field-title');
-
-                if (field.data.required) {
-                    row.classList.add('required', '_required');
-                }
-
-                if (field.label) {
-                    var labelWrapper = document.createElement('div');
-                    labelWrapper.innerHTML = field.label.replace(/\{\{idx\}\}/g, idx);
-                    row.appendChild(labelWrapper.firstChild);
-                }
-
-                var control = document.createElement('div');
-                control.classList.add('admin__field-control', 'control');
-                control.innerHTML = field.html
-                    .replace(/\{\{idx\}\}/g, idx)
-                    .replace(/\{\{value\}\}/g, escapeHtml(val[field.data.name] || ''));
-
-                control.querySelector('[data-field]').addEventListener('input', saveRows);
-
-                row.appendChild(control);
-                group.appendChild(row);
-            });
-            container.appendChild(group);
-        }
-
-        function createField(field, value, idx) {
-            var input;
-
-            switch (field.type) {
-                case "textarea":
-                    input = document.createElement('textarea');
-                    input.classList.add('textarea', 'admin__control-textarea');
-                    input.innerText = escapeHtml(value);
-                    break;
-                case "select":
-                    input = document.createElement('select');
-                    input.classList.add('select', 'admin__control-select');
-                    Object.entries(field.options).forEach(([key, label]) => {
-                        var option = document.createElement('option');
-                        option.value = key;
-                        option.textContent = label;
-                        if (key === value) {
-                            option.selected = true;
-                        }
-                        input.appendChild(option);
-                    });
-                    break;
-                default:
-                    input = document.createElement('input');
-                    input.type = 'text';
-                    input.classList.add('input-text', 'admin__control-text');
-                    input.value = escapeHtml(value);
-            }
-
-            input.id = elementId + '_' + field.name + '_' + idx;
-            input.style.flex = '1';
-            input.dataset.field = field.name;
-            input.addEventListener('input', saveRows);
-
-            return input;
-        }
-
-        function renderRows(rows) {
-            var container = document.getElementById(containerId);
-            container.innerHTML = '';
-            rows.forEach(function(val, idx) {
-                appendGroup(val, idx);
-            });
-        }
-
-        window['addRow_' + elementId] = function() {
-            var idx = document.querySelectorAll('#' + containerId + ' .repeater-group').length;
-            appendGroup({}, idx);
-            saveRows();
-        };
-
-        window['saveRows_' + elementId] = saveRows;
-
-        renderRows(existingRows);
-    })();
+    (new RepeaterWidget({
+        containerId:  '<?= $escaper->escapeJs($containerId) ?>',
+        elementId:    '<?= $escaper->escapeJs($elementId) ?>',
+        hiddenId:     '<?= $escaper->escapeJs($hiddenId) ?>',
+        label:        '<?= $escaper->escapeJs($block->getLabel()) ?>',
+        fields:       <?= /* @noEscape */ $block->getFieldTemplatesJson() ?>,
+        existingRows: <?= /* @noEscape */ $block->getExistingRowsJson() ?>,
+    })).init();
 </script>

@@ -1,7 +1,8 @@
 <?php
+
 declare(strict_types=1);
 
-namespace MatseVH\Repeater\Block\Adminhtml\Widget\Repeater\Field;
+namespace MatseVH\Repeater\Block\Adminhtml\Widget\Repeater;
 
 use Magento\Framework\Escaper;
 
@@ -18,16 +19,40 @@ abstract class AbstractField
     ) {
     }
 
-    abstract public function renderTemplate(string $elementId): string;
+    public function render(string $elementId): array
+    {
+        $templatePath = $this->getTemplatePath();
 
-    public function renderLabelTemplate(string $elementId): string
+        if ($templatePath !== null) {
+            return ['type' => 'template', 'value' => $templatePath];
+        }
+
+        return [
+            'type' => 'html',
+            'value' => $this->renderHtml($elementId),
+        ];
+    }
+
+    public function renderHtml(string $elementId): string
+    {
+        return '';
+    }
+
+    public function getTemplatePath(): ?string
+    {
+        return null;
+    }
+
+    public function renderLabelHtml(string $elementId): string
     {
         if (!static::SHOW_LABEL) {
             return '';
         }
 
         return sprintf(
-            '<label class="admin__field-label label" style="padding: 0 25px 0 10px;" for="%s_%s_{{idx}}"><span>%s</span></label>',
+            '<label class="repeater-group__label" for="%s_%s_{{idx}}">
+                    <span>%s</span>
+            </label>',
             static::escaper()->escapeHtmlAttr($elementId),
             static::escaper()->escapeHtmlAttr($this->name),
             static::escaper()->escapeHtml($this->label),
@@ -63,27 +88,27 @@ abstract class AbstractField
     {
         if ($key === '') {
             return array_merge($this->attributes, [
-                'name'     => $this->name,
-                'label'    => $this->label,
+                'name' => $this->name,
+                'label' => $this->label,
                 'required' => $this->required,
             ]);
         }
 
         return match ($key) {
-            'name'     => $this->name,
-            'label'    => $this->label,
+            'name' => $this->name,
+            'label' => $this->label,
             'required' => $this->required,
-            default    => $this->attributes[$key] ?? null,
+            default => $this->attributes[$key] ?? null,
         };
     }
 
     public function setData(string $key, mixed $value): static
     {
         match ($key) {
-            'name'     => $this->name = $value,
-            'label'    => $this->label = $value,
+            'name' => $this->name = $value,
+            'label' => $this->label = $value,
             'required' => $this->required = $value,
-            default    => $this->attributes[$key] = $value,
+            default => $this->attributes[$key] = $value,
         };
 
         return $this;

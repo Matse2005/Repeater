@@ -1,0 +1,12 @@
+<?php
+/** @var Magento\Backend\Block\Template $block */
+/** @var MatseVH\Repeater\Block\Adminhtml\Widget\Repeater\AbstractField $field */
+$field     = $block->getField();
+$elementId = $block->getElementId();
+?>
+<input type="text"
+    id="<?= $escaper->escapeHtmlAttr($elementId) ?>_<?= $escaper->escapeHtmlAttr($field->getName()) ?>_{{idx}}"
+    class="input-text admin__control-text<?= $field->isRequired() ? ' required-entry' : '' ?>"
+    data-field="<?= $escaper->escapeHtmlAttr($field->getName()) ?>"
+    <?= $field->isRequired() ? 'required="true"' : '' ?>
+    value="{{value}}" />
