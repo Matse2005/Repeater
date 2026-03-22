@@ -7,4 +7,16 @@ export default defineNuxtConfig({
   site: {
     name: 'Magento Repeater',
   },
+  github: {
+    branch: 'dev-main',
+    rootDir: 'docs'
+  },
+  vite: {
+    optimizeDeps: {
+      include: [
+        '@vue/devtools-core',
+        '@vue/devtools-kit',
+      ]
+    }
+  }
 })

@@ -1,28 +1,27 @@
 {
-    "name": "matsevh/module-repeater",
-    "description": "MatseVH_Repeater module for Magento 2",
-    "type": "magento2-module",
-    "version": "1.0.0",
-    "license": [
-        "MIT"
+  "name": "matsevh/mage2-module-repeater",
+  "description": "Add repeatable content to any widget",
+  "type": "magento2-module",
+  "license": [
+    "MIT"
+  ],
+  "autoload": {
+    "files": [
+      "registration.php"
     ],
-    "autoload": {
-        "files": [
-            "registration.php"
-        ],
-        "psr-4": {
-            "MatseVH\\Repeater\\": ""
-        }
-    },
-    "require-dev": {
-        "phpro/grumphp-shim": "^2.19"
-    },
-    "config": {
-        "allow-plugins": {
-            "phpro/grumphp-shim": true
-        }
-    },
-    "require": {
-        "azjezz/psl": "^4.3"
+    "psr-4": {
+      "MatseVH\\Repeater\\": ""
     }
+  },
+  "require-dev": {
+    "phpro/grumphp-shim": "^2.19"
+  },
+  "config": {
+    "allow-plugins": {
+      "phpro/grumphp-shim": true
+    }
+  },
+  "require": {
+    "azjezz/psl": "^4.3"
+  }
 }
