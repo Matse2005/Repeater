@@ -2,8 +2,15 @@
   "name": "matsevh/mage2-module-repeater",
   "description": "Add repeatable content to any widget",
   "type": "magento2-module",
-  "license": [
-    "MIT"
+  "homepage": "https://magento-repeater.matsevh.be",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Matse Van Horebeek",
+      "email": "matse.vanhorebeek@gmail.com",
+      "homepage": "https://matsevh.be",
+      "role": "Developer"
+    }
   ],
   "autoload": {
     "files": [
@@ -22,7 +29,7 @@
     }
   },
   "require": {
-    "php": ">=8.3",
+    "php": ">=8.3 <8.4",
     "azjezz/psl": "^4.3"
   }
 }
