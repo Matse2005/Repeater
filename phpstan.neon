@@ -1,5 +1,0 @@
-parameters:
-    paths:
-        - .
-    excludePaths:
-        - vendor
